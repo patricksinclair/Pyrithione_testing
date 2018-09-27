@@ -1,3 +1,4 @@
+import javax.tools.Tool;
 import java.util.Random;
 
 public class BioSystem {
@@ -23,6 +24,9 @@ public class BioSystem {
         microhabitats[0].setN_alive(N_alive);
     }
 
+    public double getTimeElapsed(){
+        return timeElapsed;
+    }
 
     public int getCurrentLivePopulation(){
         int runningTotal = 0;
@@ -37,6 +41,7 @@ public class BioSystem {
         for(Microhabitat m : microhabitats) {
             runningTotal += m.getN_dead();
         }
+        return runningTotal;
     }
 
 
@@ -71,29 +76,58 @@ public class BioSystem {
 
         int L = 1;
         int nReps = 10;
-        int duration = 20;
+        double duration = 20.;
         int nTimeMeasurements = 200;
+        double interval = duration/(double)nTimeMeasurements; //the time interval at which each measurement is recorded
 
         String filename = "Pyrithione_testing_c="+String.valueOf(c)+".txt";
+        String[] fileHeaders = {"time", "nAlive", "nDead"};
+
+        double[][] allTimeMeasurements = new double[nReps][];
+        int[][] allLiveMeasurements = new int[nReps][]; //array which contains all the repeated measurements
+        int[][] allDeadMeasurements = new int[nReps][];
 
         for(int nR = 0; nR < nReps; nR++){
 
             BioSystem bioSys = new BioSystem(L, N, c);
             boolean alreadyRecorded = false;
 
+            // this array will store the population of the microhabitat for each time measurement
+            double[] timeMeasurements = new double[nTimeMeasurements];
+            int[] populationOverTime = new int[nTimeMeasurements+1];
+            int[] deadPopulationOverTime = new int[nTimeMeasurements];
+            // this is used to index the population measurements
+            int timerCounter = 0;
+
             while(bioSys.timeElapsed < duration){
 
+                bioSys.performAction();
 
+                if((bioSys.getTimeElapsed()%interval >= 0. && bioSys.getTimeElapsed()%interval <= 0.01) && !alreadyRecorded){
 
+                    System.out.println("rep: "+nR+"\ttime elapsed: "+String.valueOf(bioSys.getTimeElapsed()));
+                    timeMeasurements[timerCounter] = bioSys.getTimeElapsed();
+                    populationOverTime[timerCounter] = bioSys.getCurrentLivePopulation();
+                    deadPopulationOverTime[timerCounter] = bioSys.getCurrentDeadPopulation();
+
+                    alreadyRecorded = true;
+                    timerCounter++;
+                }
+                if(bioSys.getTimeElapsed()%interval >= 0.1) alreadyRecorded = false;
             }
 
-
-
+            allTimeMeasurements[nR] = timeMeasurements;
+            allLiveMeasurements[nR] = populationOverTime;
+            allDeadMeasurements[nR] = deadPopulationOverTime;
 
         }
+        double[] averagedTimes = Toolbox.averagedResults(allTimeMeasurements);
+        double[] averagedLivePops = Toolbox.averagedResults(allLiveMeasurements);
+        double[] averagedDeadPops = Toolbox.averagedResults(allDeadMeasurements);
 
+        double[][] collatedResults = {averagedTimes, averagedLivePops, averagedDeadPops};
 
-
+        Toolbox.printResultsToFileWithHeaders(filename, fileHeaders, collatedResults);
     }
 
 

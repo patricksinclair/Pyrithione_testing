@@ -16,7 +16,7 @@ public class Microhabitat {
 
     public int getN(){return N_alive + N_dead;}
     public int getN_alive(){return N_alive;}
-    public void setN_alive(int N_alive){this.N_alive = N_alive}
+    public void setN_alive(int N_alive){this.N_alive = N_alive;}
     public int getN_dead(){return N_dead;}
     public double getC(){
         return c;

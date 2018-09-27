@@ -28,6 +28,38 @@ public class Toolbox {
         }catch (IOException e){}
     }
 
+    public static double[] averagedResults(double[][] inputData){
+        int nReps = inputData.length;
+        int nMeasurements = inputData[0].length; //no. of times a measurement was taken
+
+        double[] averagedResults = new double[nMeasurements];
+
+        for(int m = 0; m < nMeasurements; m++){
+            double runningTotal = 0.;
+            for(int r = 0; r < nReps; r++){
+                runningTotal += inputData[r][m];
+            }
+            averagedResults[m] = runningTotal/(double)nReps;
+        }
+        return averagedResults;
+    }
+
+    public static double[] averagedResults(int[][] inputData){
+        int nReps = inputData.length;
+        int nMeasurements = inputData[0].length; //no. of times a measurement was taken
+
+        double[] averagedResults = new double[nMeasurements];
+
+        for(int m = 0; m < nMeasurements; m++){
+            double runningTotal = 0.;
+            for(int r = 0; r < nReps; r++){
+                runningTotal += (double)inputData[r][m];
+            }
+            averagedResults[m] = runningTotal/(double)nReps;
+        }
+        return averagedResults;
+    }
+
     public static double[][] averagedResults(int[][][] inputData){
 
         int nReps = inputData.length;
@@ -96,5 +128,10 @@ public class Toolbox {
             }
             bw.close();
         }catch (IOException e){}
+    }
+
+    public static void printResultsToFileWithHeaders(String filename, String[] headers, double[][] collatedResults){
+        // this takes an array of the headers for the measurements and also a 2D array of the results in one,
+        // should be more modular this way
     }
 }
