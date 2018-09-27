@@ -34,6 +34,8 @@ public class Microhabitat {
     public double beta(){
         return 5.;
     }
+
+
     // set the growth rate to consistently be 0.1 here.
     // this is slightly different to the nutrients sims where phi(c) determined
     // growth and death rates

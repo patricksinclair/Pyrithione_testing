@@ -32,31 +32,33 @@ public class BioSystem {
         return runningTotal;
     }
 
+    public int getCurrentDeadPopulation(){
+        int runningTotal = 0;
+        for(Microhabitat m : microhabitats) {
+            runningTotal += m.getN_dead();
+        }
+    }
+
 
     public void performAction(){
 
         int N = getCurrentLivePopulation();
-        int randBacIndex = rand.nextInt(N);
+        //int randBacIndex = rand.nextInt(N);
         int mh_index = 0;
         Microhabitat rand_mh = microhabitats[mh_index];
 
         double death_rate = rand_mh.dRate();
+        double growth_rate = rand_mh.gRate();
 
         double R_max = 5.2;
-        double life_or_death = rand_mh.replication_or_death_rate();
+        //double life_or_death = rand_mh.replication_or_death_rate();
 
-        if(life_or_death >=0){
-            double rand_chance = rand.nextDouble()*R_max;
-
-            if(rand_chance <= migrate_rate) migrate(mh_index);
-            else if(rand_chance > migrate_rate && rand_chance <= life_or_death+migrate_rate) replicate(mh_index);
-
-        }else{
-            double rand_chance = rand.nextDouble()*R_max;
-            life_or_death*=-1;
-
-            if(rand_chance <= migrate_rate) migrate(mh_index);
-            else if(rand_chance > migrate_rate && rand_chance <= life_or_death+migrate_rate) death(mh_index);
+        double rand_chance = rand.nextDouble()*R_max;
+        // CHECK THE VALUES YOU GET FOR THE DEATH RATE, MAKE SURE IF IT'S NEGTIVE ETC
+        if(rand_chance <= growth_rate){
+            rand_mh.replicateABActerium();
+        }else if(rand_chance > growth_rate && rand_chance <= death_rate){
+            rand_mh.killABacterium();
         }
 
         timeElapsed += 1./((double)N*R_max);
@@ -65,6 +67,34 @@ public class BioSystem {
 
 
 
+    public static void popSizeOverTime(double c, int N){
+
+        int L = 1;
+        int nReps = 10;
+        int duration = 20;
+        int nTimeMeasurements = 200;
+
+        String filename = "Pyrithione_testing_c="+String.valueOf(c)+".txt";
+
+        for(int nR = 0; nR < nReps; nR++){
+
+            BioSystem bioSys = new BioSystem(L, N, c);
+            boolean alreadyRecorded = false;
+
+            while(bioSys.timeElapsed < duration){
+
+
+
+            }
+
+
+
+
+        }
+
+
+
+    }
 
 
 
