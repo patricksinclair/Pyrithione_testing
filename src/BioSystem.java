@@ -72,7 +72,7 @@ public class BioSystem {
 
 
 
-    public static void popSizeOverTime(double c, int N){
+    public static void popSizeOverTime(int N, double c){
 
         int L = 1;
         int nReps = 10;
