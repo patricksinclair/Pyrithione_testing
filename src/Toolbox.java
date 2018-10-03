@@ -133,5 +133,45 @@ public class Toolbox {
     public static void printResultsToFileWithHeaders(String filename, String[] headers, double[][] collatedResults){
         // this takes an array of the headers for the measurements and also a 2D array of the results in one,
         // should be more modular this way
+        // could add in length comparison stuff if i ever feel really fancy
+
+
+        try{
+            File file = new File(filename+".txt");
+            if(!file.exists()) file.createNewFile();
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            int nData = collatedResults.length; // the no. of arrays in the collated data array, i.e. no. of columns in file
+            int nMeasurements = collatedResults[0].length;
+
+            // writes the headers to the file
+            String header_output = "";
+            for(String heady : headers){
+                header_output += "heady\t";
+            }
+            bw.write(header_output.trim());
+            bw.newLine();
+
+            // iterate down all the measurements from each time
+            for(int nM = 0; nM < nMeasurements; nM++){
+
+                String output = "";
+                // iterate accross all the things measured at each timestep
+                for(int nD = 0; nD < nData; nD++){
+
+                    output += String.valueOf(collatedResults[nD][nM])+"\t";
+
+                }
+                bw.write(output.trim());
+                bw.newLine();
+            }
+            bw.close();
+
+        }catch (IOException e){}
+
+
+
     }
 }
