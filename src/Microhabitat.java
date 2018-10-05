@@ -22,6 +22,10 @@ public class Microhabitat {
         return c;
     }
 
+    public boolean lethalConcentration(){
+        return c > beta();
+    }
+
     public void replicateABActerium(){N_alive++;}
 
     public void killABacterium(){

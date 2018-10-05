@@ -6,27 +6,78 @@ import java.util.ArrayList;
 
 public class Toolbox {
 
-    public static void writeContoursToFile(ArrayList<Double> xData, ArrayList<Double> yData, ArrayList<Double> zData, String filename){
+    public static double[] convertArrayListToDoubleArray(ArrayList<Double> inputData){
+        double[] outputData = new double[inputData.size()];
 
-        try{
-            File file = new File(filename+".txt");
-            if(!file.exists()) file.createNewFile();
-
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            int n = xData.size();
-
-            for(int i = 0; i < n; i++){
-                for(int j = i*n; j < (i+1)*n; j++){
-                    String output = String.valueOf(xData.get(i)) + " " + String.valueOf(yData.get(j)) +" " + String.valueOf(zData.get(j));
-                    bw.write(output);
-                    bw.newLine();
-                }
-                bw.newLine();
-            }
-            bw.close();
-        }catch (IOException e){}
+        for(int i = 0; i < inputData.size(); i++){
+            outputData[i] = inputData.get(i);
+        }
+        return outputData;
     }
+
+    public static int[] convertArrayListToIntArray(ArrayList<Integer> inputData){
+        int[] outputData = new int[inputData.size()];
+
+        for(int i = 0; i < inputData.size(); i++){
+            outputData[i] = inputData.get(i);
+        }
+        return outputData;
+    }
+
+    public static double[] averagedJaggedResults(double[][] inputData){
+        int maxColVals = 0;
+        for(int i = 0; i < inputData.length; i++){
+            if(inputData[i].length > maxColVals)
+                maxColVals = inputData[i].length;
+        }
+
+        double[] outputData = new double[maxColVals];
+
+        // need to iterate along all the measurements for t1 -> t2 -> etc
+        // so outer loop is getting all the values per each sampling interval
+        for(int j = 0; j < maxColVals; j++){
+            double sum = 0.;
+            double nVals = 0;
+
+            for(int i = 0; i < inputData.length; i++){
+                // this condition ensures there are no out of bounds exceptions
+                if(j < inputData[i].length){
+                    sum += inputData[i][j];
+                    nVals += 1.;
+                }
+            }
+            outputData[j] = sum/nVals;
+        }
+        return outputData;
+    }
+
+    public static double[] averagedJaggedResults(int[][] inputData){
+        int maxColVals = 0;
+        for(int i = 0; i < inputData.length; i++){
+            if(inputData[i].length > maxColVals)
+                maxColVals = inputData[i].length;
+        }
+
+        double[] outputData = new double[maxColVals];
+
+        // need to iterate along all the measurements for t1 -> t2 -> etc
+        // so outer loop is getting all the values per each sampling interval
+        for(int j = 0; j < maxColVals; j++){
+            double sum = 0.;
+            double nVals = 0;
+
+            for(int i = 0; i < inputData.length; i++){
+                // this condition ensures there are no out of bounds exceptions
+                if(j < inputData[i].length){
+                    sum += inputData[i][j];
+                    nVals += 1.;
+                }
+            }
+            if(nVals > 1) outputData[j] = sum/nVals;
+        }
+        return outputData;
+    }
+
 
     public static double[] averagedResults(double[][] inputData){
         int nReps = inputData.length;
@@ -106,29 +157,7 @@ public class Toolbox {
         return averagedResults;
     }
 
-    public static void printAveragedResultsToFile(String filename, double[][] inputData){
 
-        try {
-            File file = new File(filename+".txt");
-            if(!file.exists()) file.createNewFile();
-
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-
-            int nTimes = inputData.length;
-            int L = inputData[0].length;
-
-            for(int l = 0; l < L; l++){
-                String output = String.valueOf(l)+" ";
-                for(int t = 0; t < nTimes; t++){
-                    output += String.valueOf(inputData[t][l]+ " ");
-                }
-                bw.write(output);
-                bw.newLine();
-            }
-            bw.close();
-        }catch (IOException e){}
-    }
 
     public static void printResultsToFileWithHeaders(String filename, String[] headers, double[][] collatedResults){
         // this takes an array of the headers for the measurements and also a 2D array of the results in one,
@@ -147,9 +176,9 @@ public class Toolbox {
             int nMeasurements = collatedResults[0].length;
 
             // writes the headers to the file
-            String header_output = "";
+            String header_output = "#";
             for(String heady : headers){
-                header_output += "heady\t";
+                header_output += heady+"\t";
             }
             bw.write(header_output.trim());
             bw.newLine();
@@ -161,7 +190,9 @@ public class Toolbox {
                 // iterate accross all the things measured at each timestep
                 for(int nD = 0; nD < nData; nD++){
 
-                    output += String.valueOf(collatedResults[nD][nM])+"\t";
+                    String formattedOutput = String.format("%.3f", collatedResults[nD][nM]);
+                    output += formattedOutput+"\t";
+                    //output += String.valueOf(collatedResults[nD][nM])+"\t";
 
                 }
                 bw.write(output.trim());
@@ -170,8 +201,11 @@ public class Toolbox {
             bw.close();
 
         }catch (IOException e){}
+    }
 
 
+
+    public static void averageJaggedResults(String filename, String[] headers, double[][] collatedResults){
 
     }
 }
