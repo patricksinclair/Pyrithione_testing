@@ -1,13 +1,22 @@
 public class Microhabitat {
 
     private int N_alive;
-    private double c;
+    private double c, beta;
 
     int N_dead;
 
     public Microhabitat(int N_alive, double c){
         this.N_alive = N_alive;
         this.c = c;
+        this.beta = 5;
+
+        this.N_dead = 0;
+    }
+
+    public Microhabitat(int N_alive, double c, double beta){
+        this.N_alive = N_alive;
+        this.c = c;
+        this.beta = beta;
 
         this.N_dead = 0;
     }
@@ -36,7 +45,7 @@ public class Microhabitat {
     }
 
     public double beta(){
-        return 5.;
+        return beta;
     }
 
 

@@ -205,7 +205,46 @@ public class Toolbox {
 
 
 
-    public static void averageJaggedResults(String filename, String[] headers, double[][] collatedResults){
+    public static void writeTimesAnd2DArrayToFileWithHeaders(String filename, String[] headers, double[] times, double[][] measurements){
+
+        try{
+            File file = new File(filename+".txt");
+            if(!file.exists()) file.createNewFile();
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            int nFeatures = measurements.length; // the no. of arrays in the measurements array, e.g. no. of MICs
+            int nTimes = times.length;
+
+            // writes the headers to the file
+            String header_output = "#";
+            for(String heady : headers){
+                header_output += heady+"\t";
+            }
+            bw.write(header_output.trim());
+            bw.newLine();
+
+            // iterate down all the measurements from each time
+            for(int t = 0; t < nTimes; t++){
+
+                String output = String.valueOf(times[t])+"\t";
+                // iterate accross all the things measured at each timestep
+                for(int nF = 0; nF < nFeatures; nF++){
+
+                    String formattedOutput = String.format("%.3f", measurements[nF][t]);
+                    output += formattedOutput+"\t";
+                    //output += String.valueOf(collatedResults[nD][nM])+"\t";
+
+                }
+                bw.write(output.trim());
+                bw.newLine();
+            }
+            bw.close();
+
+        }catch (IOException e){}
+
+
 
     }
 }
